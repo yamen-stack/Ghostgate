@@ -1,13 +1,16 @@
 import React from 'react';
 import { ArrowLeft, Clock, User, Calendar, Tag } from 'lucide-react';
 import { BlogPost as BlogPostType } from '../types/blog';
+import { Translation } from '../types/translations';
 
 interface BlogPostProps {
   post: BlogPostType;
   onBack: () => void;
+  t: (key: keyof Translation) => string;
+  isRTL: boolean;
 }
 
-export const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
+export const BlogPost: React.FC<BlogPostProps> = ({ post, onBack, t, isRTL }) => {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'body':
@@ -44,7 +47,7 @@ export const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen bg-black text-white ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -53,7 +56,7 @@ export const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
             className="flex items-center space-x-2 text-gray-400 hover:text-yellow-400 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
-            <span>Back to Blog</span>
+            <span>{t('backToBlog')}</span>
           </button>
         </div>
       </div>
@@ -94,7 +97,7 @@ export const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
               
               <div className="flex items-center space-x-1">
                 <Clock className="h-4 w-4" />
-                <span>{post.readTime} min read</span>
+                <span>{post.readTime} {t('minRead')}</span>
               </div>
             </div>
           </div>
@@ -117,7 +120,7 @@ export const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
         <div className="mt-12 pt-8 border-t border-gray-800">
           <div className="flex items-center space-x-2 mb-4">
             <Tag className="h-5 w-5 text-gray-400" />
-            <span className="text-gray-400 font-medium">Tags:</span>
+            <span className="text-gray-400 font-medium">{t('tags')}</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (

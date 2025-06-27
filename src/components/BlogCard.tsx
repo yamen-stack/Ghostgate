@@ -1,13 +1,16 @@
 import React from 'react';
 import { Clock, User, ArrowRight } from 'lucide-react';
 import { BlogPost } from '../types/blog';
+import { Translation } from '../types/translations';
 
 interface BlogCardProps {
   post: BlogPost;
   onClick: () => void;
+  t: (key: keyof Translation) => string;
+  isRTL: boolean;
 }
 
-export const BlogCard: React.FC<BlogCardProps> = ({ post, onClick }) => {
+export const BlogCard: React.FC<BlogCardProps> = ({ post, onClick, t, isRTL }) => {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'body':
@@ -52,14 +55,14 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, onClick }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
         
         {post.featured && (
-          <div className="absolute top-4 left-4">
+          <div className={`absolute top-4 ${isRTL ? 'right-4' : 'left-4'}`}>
             <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${getCategoryColor(post.category)}`}>
               Featured
             </span>
           </div>
         )}
         
-        <div className="absolute bottom-4 left-4">
+        <div className={`absolute bottom-4 ${isRTL ? 'right-4' : 'left-4'}`}>
           <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${getCategoryColor(post.category)}`}>
             {post.category.charAt(0).toUpperCase() + post.category.slice(1)}
           </span>
@@ -88,7 +91,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, onClick }) => {
             
             <div className="flex items-center space-x-1">
               <Clock className="h-4 w-4" />
-              <span>{post.readTime} min read</span>
+              <span>{post.readTime} {t('minRead')}</span>
             </div>
           </div>
           
@@ -107,7 +110,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, onClick }) => {
             ))}
           </div>
           
-          <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-yellow-400 group-hover:translate-x-1 transition-all" />
+          <ArrowRight className={`h-5 w-5 text-gray-400 group-hover:text-yellow-400 group-hover:${isRTL ? '-translate-x-1' : 'translate-x-1'} transition-all`} />
         </div>
       </div>
     </article>

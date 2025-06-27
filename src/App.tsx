@@ -14,12 +14,17 @@ import {
   Zap,
   Crown,
   BookOpen,
-  Settings
+  Settings,
+  Mail,
+  Phone,
+  MapPin
 } from 'lucide-react';
 import { BlogList } from './components/BlogList';
 import { BlogPost } from './components/BlogPost';
 import { AdminPanel } from './components/AdminPanel';
+import { LanguageSelector } from './components/LanguageSelector';
 import { BlogPost as BlogPostType } from './types/blog';
+import { useTranslation } from './hooks/useTranslation';
 
 type View = 'home' | 'blog' | 'post' | 'admin';
 
@@ -27,6 +32,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedPost, setSelectedPost] = useState<BlogPostType | null>(null);
+  const { t, currentLanguage, changeLanguage, isRTL } = useTranslation();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -50,12 +56,12 @@ function App() {
   }
 
   if (currentView === 'post' && selectedPost) {
-    return <BlogPost post={selectedPost} onBack={handleBackToBlog} />;
+    return <BlogPost post={selectedPost} onBack={handleBackToBlog} t={t} isRTL={isRTL} />;
   }
 
   if (currentView === 'blog') {
     return (
-      <div>
+      <div className={isRTL ? 'rtl' : 'ltr'} dir={isRTL ? 'rtl' : 'ltr'}>
         {/* Navigation for Blog */}
         <nav className="fixed w-full z-50 bg-black/90 backdrop-blur-md border-b border-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,8 +74,13 @@ function App() {
               </div>
               
               <div className="hidden md:flex items-center space-x-8">
-                <button onClick={handleBackToHome} className="text-gray-300 hover:text-yellow-400 transition-colors">Home</button>
-                <button className="text-yellow-400">Blog</button>
+                <button onClick={handleBackToHome} className="text-gray-300 hover:text-yellow-400 transition-colors">{t('home')}</button>
+                <button className="text-yellow-400">{t('blog')}</button>
+                <LanguageSelector 
+                  currentLanguage={currentLanguage}
+                  onLanguageChange={changeLanguage}
+                  isRTL={isRTL}
+                />
                 <button 
                   onClick={() => setCurrentView('admin')}
                   className="text-gray-300 hover:text-yellow-400 transition-colors"
@@ -80,13 +91,13 @@ function App() {
             </div>
           </div>
         </nav>
-        <BlogList onPostSelect={handlePostSelect} />
+        <BlogList onPostSelect={handlePostSelect} t={t} isRTL={isRTL} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`min-h-screen bg-black text-white ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Navigation */}
       <nav className="fixed w-full z-50 bg-black/90 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,16 +110,21 @@ function App() {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#pillars" className="text-gray-300 hover:text-yellow-400 transition-colors">Pillars</a>
-              <a href="#community" className="text-gray-300 hover:text-yellow-400 transition-colors">Community</a>
-              <a href="#testimonials" className="text-gray-300 hover:text-yellow-400 transition-colors">Success Stories</a>
+              <a href="#pillars" className="text-gray-300 hover:text-yellow-400 transition-colors">{t('pillars')}</a>
+              <a href="#community" className="text-gray-300 hover:text-yellow-400 transition-colors">{t('community')}</a>
+              <a href="#testimonials" className="text-gray-300 hover:text-yellow-400 transition-colors">{t('successStories')}</a>
               <button 
                 onClick={() => setCurrentView('blog')}
                 className="flex items-center space-x-1 text-gray-300 hover:text-yellow-400 transition-colors"
               >
                 <BookOpen className="h-4 w-4" />
-                <span>Blog</span>
+                <span>{t('blog')}</span>
               </button>
+              <LanguageSelector 
+                currentLanguage={currentLanguage}
+                onLanguageChange={changeLanguage}
+                isRTL={isRTL}
+              />
               <button 
                 onClick={() => setCurrentView('admin')}
                 className="text-gray-300 hover:text-yellow-400 transition-colors"
@@ -116,7 +132,7 @@ function App() {
                 <Settings className="h-5 w-5" />
               </button>
               <button className="bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-6 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-yellow-500/25">
-                Join Elite
+                {t('joinElite')}
               </button>
             </div>
 
@@ -132,23 +148,30 @@ function App() {
         {isMenuOpen && (
           <div className="md:hidden bg-gray-900 border-t border-gray-700">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <a href="#pillars" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">Pillars</a>
-              <a href="#community" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">Community</a>
-              <a href="#testimonials" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">Success Stories</a>
+              <a href="#pillars" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">{t('pillars')}</a>
+              <a href="#community" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">{t('community')}</a>
+              <a href="#testimonials" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">{t('successStories')}</a>
               <button 
                 onClick={() => setCurrentView('blog')}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-yellow-400"
               >
-                Blog
+                {t('blog')}
               </button>
+              <div className="px-3 py-2">
+                <LanguageSelector 
+                  currentLanguage={currentLanguage}
+                  onLanguageChange={changeLanguage}
+                  isRTL={isRTL}
+                />
+              </div>
               <button 
                 onClick={() => setCurrentView('admin')}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-yellow-400"
               >
-                Admin
+                {t('admin')}
               </button>
               <button className="w-full mt-2 bg-gradient-to-r from-yellow-500 to-red-600 px-4 py-2 rounded-lg font-semibold shadow-lg shadow-yellow-500/25">
-                Join Elite
+                {t('joinElite')}
               </button>
             </div>
           </div>
@@ -164,21 +187,21 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Escape the Matrix.
+                {t('heroTitle1')}
                 <br />
                 <span className="bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
-                  Build Your Empire.
+                  {t('heroTitle2')}
                 </span>
               </h1>
               <p className="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl leading-relaxed">
-                Join an exclusive brotherhood of elite achievers mastering the three pillars of dominance: 
-                <span className="text-yellow-400 font-semibold"> Body</span>, 
-                <span className="text-red-400 font-semibold"> Social Power</span>, and 
-                <span className="text-yellow-500 font-semibold"> Wealth</span>.
+                {t('heroSubtitle')}
+                <span className="text-yellow-400 font-semibold"> {t('dreamBody')}</span>, 
+                <span className="text-red-400 font-semibold"> {t('socialMastery')}</span>, {t('wealthCreation')} 
+                <span className="text-yellow-500 font-semibold"> {t('wealthCreation')}</span>.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 items-start mb-12">
                 <button className="group bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 flex items-center space-x-2 shadow-lg shadow-yellow-500/25">
-                  <span>Unlock Your Potential</span>
+                  <span>{t('unlockPotential')}</span>
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <div className="flex items-center space-x-2 text-gray-400">
@@ -187,7 +210,7 @@ function App() {
                     <div className="w-8 h-8 bg-red-500 rounded-full border-2 border-black"></div>
                     <div className="w-8 h-8 bg-yellow-600 rounded-full border-2 border-black"></div>
                   </div>
-                  <span className="text-sm">2,847 elite members</span>
+                  <span className="text-sm">2,847 {t('eliteMembers')}</span>
                 </div>
               </div>
             </div>
@@ -208,18 +231,14 @@ function App() {
       {/* Stats Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/50">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="text-center">
               <div className="text-4xl font-bold text-yellow-400 mb-2">2,847</div>
-              <div className="text-gray-300">Elite Members</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-red-400 mb-2">$2.4M</div>
-              <div className="text-gray-300">Generated in Revenue</div>
+              <div className="text-gray-300">{t('statsMembers')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-yellow-500 mb-2">98%</div>
-              <div className="text-gray-300">Success Rate</div>
+              <div className="text-gray-300">{t('statsSuccessRate')}</div>
             </div>
           </div>
         </div>
@@ -230,14 +249,14 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-              The Three Pillars of
+              {t('pillarsTitle1')}
               <br />
               <span className="bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
-                Absolute Dominance
+                {t('pillarsTitle2')}
               </span>
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Master these three fundamental areas and watch your life transform beyond recognition.
+              {t('pillarsSubtitle')}
             </p>
           </div>
 
@@ -256,22 +275,22 @@ function App() {
                 </div>
               </div>
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-yellow-400 mb-4">Dream Body</h3>
+                <h3 className="text-2xl font-bold text-yellow-400 mb-4">{t('dreamBody')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  Transform your physique with proven strategies that build muscle, burn fat, and create the body that commands respect.
+                  {t('dreamBodyDesc')}
                 </p>
                 <ul className="space-y-2 text-gray-300">
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-                    <span>Elite workout protocols</span>
+                    <span>{t('eliteWorkouts')}</span>
                   </li>
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-                    <span>Nutrition mastery</span>
+                    <span>{t('nutritionMastery')}</span>
                   </li>
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-                    <span>Mindset transformation</span>
+                    <span>{t('mindsetTransformation')}</span>
                   </li>
                 </ul>
               </div>
@@ -291,22 +310,22 @@ function App() {
                 </div>
               </div>
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-red-400 mb-4">Social Mastery</h3>
+                <h3 className="text-2xl font-bold text-red-400 mb-4">{t('socialMastery')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  Develop magnetic charisma, build powerful networks, and master the art of influence in every social situation.
+                  {t('socialMasteryDesc')}
                 </p>
                 <ul className="space-y-2 text-gray-300">
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-red-400 flex-shrink-0" />
-                    <span>Charisma development</span>
+                    <span>{t('charismaDevelopment')}</span>
                   </li>
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-red-400 flex-shrink-0" />
-                    <span>Elite networking</span>
+                    <span>{t('eliteNetworking')}</span>
                   </li>
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-red-400 flex-shrink-0" />
-                    <span>Influence mastery</span>
+                    <span>{t('influenceMastery')}</span>
                   </li>
                 </ul>
               </div>
@@ -326,22 +345,22 @@ function App() {
                 </div>
               </div>
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-yellow-500 mb-4">Wealth Creation</h3>
+                <h3 className="text-2xl font-bold text-yellow-500 mb-4">{t('wealthCreation')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  Build multiple income streams, master investments, and create the financial freedom that buys you time and options.
+                  {t('wealthCreationDesc')}
                 </p>
                 <ul className="space-y-2 text-gray-300">
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-yellow-500 flex-shrink-0" />
-                    <span>Business strategies</span>
+                    <span>{t('businessStrategies')}</span>
                   </li>
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-yellow-500 flex-shrink-0" />
-                    <span>Investment mastery</span>
+                    <span>{t('investmentMastery')}</span>
                   </li>
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="h-4 w-4 text-yellow-500 flex-shrink-0" />
-                    <span>Financial freedom</span>
+                    <span>{t('financialFreedom')}</span>
                   </li>
                 </ul>
               </div>
@@ -355,14 +374,14 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-              Learn from
+              {t('mentorsTitle1')}
               <br />
               <span className="bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
-                Elite Mentors
+                {t('mentorsTitle2')}
               </span>
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Get direct access to strategies from those who've already achieved what you're working toward.
+              {t('mentorsSubtitle')}
             </p>
           </div>
 
@@ -375,8 +394,8 @@ function App() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="text-white font-bold text-lg mb-1">Business Mastery</h3>
-                <p className="text-gray-300 text-sm">Elite entrepreneurship strategies</p>
+                <h3 className="text-white font-bold text-lg mb-1">{t('businessMasteryTitle')}</h3>
+                <p className="text-gray-300 text-sm">{t('businessMasteryDesc')}</p>
               </div>
             </div>
 
@@ -388,8 +407,8 @@ function App() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="text-white font-bold text-lg mb-1">Peak Performance</h3>
-                <p className="text-gray-300 text-sm">Body transformation secrets</p>
+                <h3 className="text-white font-bold text-lg mb-1">{t('peakPerformanceTitle')}</h3>
+                <p className="text-gray-300 text-sm">{t('peakPerformanceDesc')}</p>
               </div>
             </div>
 
@@ -401,8 +420,8 @@ function App() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="text-white font-bold text-lg mb-1">Social Influence</h3>
-                <p className="text-gray-300 text-sm">Charisma and networking mastery</p>
+                <h3 className="text-white font-bold text-lg mb-1">{t('socialInfluenceTitle')}</h3>
+                <p className="text-gray-300 text-sm">{t('socialInfluenceDesc')}</p>
               </div>
             </div>
 
@@ -414,8 +433,8 @@ function App() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="text-white font-bold text-lg mb-1">Wealth Building</h3>
-                <p className="text-gray-300 text-sm">Investment and financial strategies</p>
+                <h3 className="text-white font-bold text-lg mb-1">{t('wealthBuildingTitle')}</h3>
+                <p className="text-gray-300 text-sm">{t('wealthBuildingDesc')}</p>
               </div>
             </div>
           </div>
@@ -428,28 +447,27 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-                Join the
+                {t('communityTitle1')}
                 <br />
                 <span className="bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
-                  Elite Brotherhood
+                  {t('communityTitle2')}
                 </span>
               </h2>
               <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                GhostGate isn't just another course. It's an exclusive brotherhood of ambitious individuals who refuse to accept mediocrity. 
-                Here, you'll find the accountability, mentorship, and proven strategies that separate the elite from the average.
+                {t('communitySubtitle')}
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Target className="h-6 w-6 text-yellow-400" />
-                  <span className="text-gray-300">Daily accountability and progress tracking</span>
+                  <span className="text-gray-300">{t('dailyAccountability')}</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Zap className="h-6 w-6 text-red-400" />
-                  <span className="text-gray-300">Live weekly masterclasses with elite mentors</span>
+                  <span className="text-gray-300">{t('liveMasterclasses')}</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Crown className="h-6 w-6 text-yellow-500" />
-                  <span className="text-gray-300">Exclusive networking with high-achievers</span>
+                  <span className="text-gray-300">{t('exclusiveNetworking')}</span>
                 </div>
               </div>
             </div>
@@ -471,10 +489,10 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-              Success Stories from
+              {t('testimonialsTitle1')}
               <br />
               <span className="bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
-                Elite Members
+                {t('testimonialsTitle2')}
               </span>
             </h2>
           </div>
@@ -487,7 +505,7 @@ function App() {
                 ))}
               </div>
               <p className="text-gray-300 mb-4 italic">
-                "Lost 40 pounds, built a seven-figure business, and gained unshakeable confidence. GhostGate transformed my entire existence."
+                "{t('testimonial1')}"
               </p>
               <div className="flex items-center space-x-3">
                 <img 
@@ -497,7 +515,7 @@ function App() {
                 />
                 <div>
                   <div className="font-semibold text-white">Marcus R.</div>
-                  <div className="text-gray-400 text-sm">CEO & Entrepreneur</div>
+                  <div className="text-gray-400 text-sm">{t('ceoEntrepreneur')}</div>
                 </div>
               </div>
             </div>
@@ -509,7 +527,7 @@ function App() {
                 ))}
               </div>
               <p className="text-gray-300 mb-4 italic">
-                "Completely transformed my social life. Now I command respect in every room and have built an incredible network of high-value connections."
+                "{t('testimonial2')}"
               </p>
               <div className="flex items-center space-x-3">
                 <img 
@@ -519,7 +537,7 @@ function App() {
                 />
                 <div>
                   <div className="font-semibold text-white">David L.</div>
-                  <div className="text-gray-400 text-sm">Sales Director</div>
+                  <div className="text-gray-400 text-sm">{t('salesDirector')}</div>
                 </div>
               </div>
             </div>
@@ -531,7 +549,7 @@ function App() {
                 ))}
               </div>
               <p className="text-gray-300 mb-4 italic">
-                "Went from $50k/year to $300k in 18 months. The wealth strategies here are pure gold. This investment paid for itself 100x over."
+                "{t('testimonial3')}"
               </p>
               <div className="flex items-center space-x-3">
                 <img 
@@ -541,7 +559,7 @@ function App() {
                 />
                 <div>
                   <div className="font-semibold text-white">Alex K.</div>
-                  <div className="text-gray-400 text-sm">Investor & Trader</div>
+                  <div className="text-gray-400 text-sm">{t('investorTrader')}</div>
                 </div>
               </div>
             </div>
@@ -553,23 +571,22 @@ function App() {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-yellow-900/20 to-red-900/20">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-            Stop Making Excuses.
+            {t('ctaTitle1')}
             <br />
             <span className="bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
-              Start Making History.
+              {t('ctaTitle2')}
             </span>
           </h2>
           <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-            Every day you wait is another day your competition gets ahead. 
-            The only question is: Are you ready to join the elite?
+            {t('ctaSubtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button className="group bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 flex items-center space-x-2 shadow-lg shadow-yellow-500/25">
-              <span>Join GhostGate Elite</span>
+              <span>{t('joinGhostGate')}</span>
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <div className="text-gray-400 text-sm">
-              Limited spots available • Join 2,847 elite members
+              {t('limitedSpots')}
             </div>
           </div>
         </div>
@@ -578,15 +595,61 @@ function App() {
       {/* Footer */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-black border-t border-gray-800">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <Crown className="h-8 w-8 text-yellow-500" />
-              <span className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
-                GhostGate
-              </span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {/* Logo and Description */}
+            <div className="md:col-span-1">
+              <div className="flex items-center space-x-2 mb-4">
+                <Crown className="h-8 w-8 text-yellow-500" />
+                <span className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent">
+                  GhostGate
+                </span>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Transform your life through the three pillars of success: Body, Social Life, and Wealth.
+              </p>
             </div>
-            <div className="text-gray-400 text-sm">
-              © 2025 GhostGate Elite. All rights reserved.
+
+            {/* Contacts */}
+            <div className="md:col-span-1">
+              <h3 className="text-white font-semibold mb-4">{t('contacts')}</h3>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3 text-gray-400">
+                  <Mail className="h-4 w-4 text-yellow-400" />
+                  <a href="mailto:elite@ghostgate.com" className="hover:text-yellow-400 transition-colors">
+                    {t('email')}
+                  </a>
+                </div>
+                <div className="flex items-center space-x-3 text-gray-400">
+                  <Phone className="h-4 w-4 text-yellow-400" />
+                  <a href="tel:+15551234357" className="hover:text-yellow-400 transition-colors">
+                    {t('phone')}
+                  </a>
+                </div>
+                <div className="flex items-center space-x-3 text-gray-400">
+                  <MapPin className="h-4 w-4 text-yellow-400" />
+                  <span>{t('address')}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Owner Info */}
+            <div className="md:col-span-1">
+              <h3 className="text-white font-semibold mb-4">{t('ownerLabel')}</h3>
+              <div className="text-gray-400 text-sm">
+                <p className="font-medium text-yellow-400">Alexander Phoenix</p>
+                <p className="text-xs mt-1 opacity-75">Elite Performance Coach & Entrepreneur</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div className="text-gray-400 text-sm mb-4 md:mb-0">
+                {t('allRightsReserved')}
+              </div>
+              <div className="text-gray-500 text-xs">
+                <span className="opacity-50">Private & Confidential</span>
+              </div>
             </div>
           </div>
         </div>
