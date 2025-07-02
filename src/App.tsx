@@ -17,21 +17,32 @@ import {
   Settings,
   Mail,
   Phone,
-  MapPin
+  MapPin,
+  User,
+  LogOut
 } from 'lucide-react';
 import { BlogList } from './components/BlogList';
 import { BlogPost } from './components/BlogPost';
 import { AdminPanel } from './components/AdminPanel';
 import { LanguageSelector } from './components/LanguageSelector';
+import { LoginModal } from './components/LoginModal';
+import { PricingSection } from './components/PricingSection';
 import { BlogPost as BlogPostType } from './types/blog';
 import { useTranslation } from './hooks/useTranslation';
 
 type View = 'home' | 'blog' | 'post' | 'admin';
 
+interface User {
+  name: string;
+  email: string;
+}
+
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedPost, setSelectedPost] = useState<BlogPostType | null>(null);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const { t, currentLanguage, changeLanguage, isRTL } = useTranslation();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -49,6 +60,24 @@ function App() {
   const handleBackToHome = () => {
     setCurrentView('home');
     setSelectedPost(null);
+  };
+
+  const handleLogin = (userData: User) => {
+    setUser(userData);
+    setIsLoginModalOpen(false);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
+  const handleJoinClick = () => {
+    if (!user) {
+      setIsLoginModalOpen(true);
+    } else {
+      // Handle course enrollment
+      alert('Course enrollment functionality would be implemented here');
+    }
   };
 
   if (currentView === 'admin') {
@@ -81,6 +110,24 @@ function App() {
                   onLanguageChange={changeLanguage}
                   isRTL={isRTL}
                 />
+                {user ? (
+                  <div className="flex items-center space-x-4">
+                    <span className="text-gray-300">{t('welcome')}, {user.name}</span>
+                    <button 
+                      onClick={handleLogout}
+                      className="text-gray-300 hover:text-yellow-400 transition-colors"
+                    >
+                      <LogOut className="h-5 w-5" />
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setIsLoginModalOpen(true)}
+                    className="text-gray-300 hover:text-yellow-400 transition-colors"
+                  >
+                    {t('login')}
+                  </button>
+                )}
                 <button 
                   onClick={() => setCurrentView('admin')}
                   className="text-gray-300 hover:text-yellow-400 transition-colors"
@@ -111,6 +158,7 @@ function App() {
             
             <div className="hidden md:flex items-center space-x-8">
               <a href="#pillars" className="text-gray-300 hover:text-yellow-400 transition-colors">{t('pillars')}</a>
+              <a href="#pricing" className="text-gray-300 hover:text-yellow-400 transition-colors">Pricing</a>
               <a href="#community" className="text-gray-300 hover:text-yellow-400 transition-colors">{t('community')}</a>
               <a href="#testimonials" className="text-gray-300 hover:text-yellow-400 transition-colors">{t('successStories')}</a>
               <button 
@@ -125,13 +173,34 @@ function App() {
                 onLanguageChange={changeLanguage}
                 isRTL={isRTL}
               />
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-gray-300">{t('welcome')}, {user.name}</span>
+                  <button 
+                    onClick={handleLogout}
+                    className="text-gray-300 hover:text-yellow-400 transition-colors"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setIsLoginModalOpen(true)}
+                  className="text-gray-300 hover:text-yellow-400 transition-colors"
+                >
+                  {t('login')}
+                </button>
+              )}
               <button 
                 onClick={() => setCurrentView('admin')}
                 className="text-gray-300 hover:text-yellow-400 transition-colors"
               >
                 <Settings className="h-5 w-5" />
               </button>
-              <button className="bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-6 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-yellow-500/25">
+              <button 
+                onClick={handleJoinClick}
+                className="bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-6 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-yellow-500/25"
+              >
                 {t('joinElite')}
               </button>
             </div>
@@ -149,6 +218,7 @@ function App() {
           <div className="md:hidden bg-gray-900 border-t border-gray-700">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <a href="#pillars" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">{t('pillars')}</a>
+              <a href="#pricing" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">Pricing</a>
               <a href="#community" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">{t('community')}</a>
               <a href="#testimonials" className="block px-3 py-2 text-gray-300 hover:text-yellow-400">{t('successStories')}</a>
               <button 
@@ -164,13 +234,34 @@ function App() {
                   isRTL={isRTL}
                 />
               </div>
+              {user ? (
+                <div className="px-3 py-2">
+                  <span className="text-gray-300 block mb-2">{t('welcome')}, {user.name}</span>
+                  <button 
+                    onClick={handleLogout}
+                    className="text-gray-300 hover:text-yellow-400"
+                  >
+                    {t('logout')}
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setIsLoginModalOpen(true)}
+                  className="block w-full text-left px-3 py-2 text-gray-300 hover:text-yellow-400"
+                >
+                  {t('login')}
+                </button>
+              )}
               <button 
                 onClick={() => setCurrentView('admin')}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-yellow-400"
               >
                 {t('admin')}
               </button>
-              <button className="w-full mt-2 bg-gradient-to-r from-yellow-500 to-red-600 px-4 py-2 rounded-lg font-semibold shadow-lg shadow-yellow-500/25">
+              <button 
+                onClick={handleJoinClick}
+                className="w-full mt-2 bg-gradient-to-r from-yellow-500 to-red-600 px-4 py-2 rounded-lg font-semibold shadow-lg shadow-yellow-500/25"
+              >
                 {t('joinElite')}
               </button>
             </div>
@@ -200,7 +291,10 @@ function App() {
                 <span className="text-yellow-500 font-semibold"> {t('wealthCreation')}</span>.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 items-start mb-12">
-                <button className="group bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 flex items-center space-x-2 shadow-lg shadow-yellow-500/25">
+                <button 
+                  onClick={handleJoinClick}
+                  className="group bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 flex items-center space-x-2 shadow-lg shadow-yellow-500/25"
+                >
                   <span>{t('unlockPotential')}</span>
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -368,6 +462,9 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <PricingSection t={t} isRTL={isRTL} onJoinClick={handleJoinClick} />
 
       {/* Inspiring Figures Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
@@ -581,7 +678,10 @@ function App() {
             {t('ctaSubtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="group bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 flex items-center space-x-2 shadow-lg shadow-yellow-500/25">
+            <button 
+              onClick={handleJoinClick}
+              className="group bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 flex items-center space-x-2 shadow-lg shadow-yellow-500/25"
+            >
               <span>{t('joinGhostGate')}</span>
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -636,7 +736,7 @@ function App() {
             <div className="md:col-span-1">
               <h3 className="text-white font-semibold mb-4">{t('ownerLabel')}</h3>
               <div className="text-gray-400 text-sm">
-                <p className="font-medium text-yellow-400">Alexander Phoenix</p>
+                <p className="font-medium text-yellow-400">M. Yamen</p>
                 <p className="text-xs mt-1 opacity-75">Elite Performance Coach & Entrepreneur</p>
               </div>
             </div>
@@ -654,6 +754,13 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLogin={handleLogin}
+      />
     </div>
   );
 }

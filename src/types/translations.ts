@@ -39,6 +39,16 @@ export interface Translation {
   investmentMastery: string;
   financialFreedom: string;
 
+  // Pricing
+  pricingTitle1: string;
+  pricingTitle2: string;
+  pricingSubtitle: string;
+  startTransformation: string;
+  bundleOffer: string;
+  getAllThree: string;
+  save: string;
+  dinar: string;
+
   // Elite Mentors
   mentorsTitle1: string;
   mentorsTitle2: string;
@@ -100,6 +110,11 @@ export interface Translation {
   backToBlog: string;
   tags: string;
   minRead: string;
+
+  // Auth
+  login: string;
+  logout: string;
+  welcome: string;
 }
 
 export const translations: Record<string, Translation> = {
@@ -143,6 +158,16 @@ export const translations: Record<string, Translation> = {
     businessStrategies: "Business strategies",
     investmentMastery: "Investment mastery",
     financialFreedom: "Financial freedom",
+
+    // Pricing
+    pricingTitle1: "Choose Your",
+    pricingTitle2: "Transformation Path",
+    pricingSubtitle: "Each course is designed to master one pillar of success. Choose your focus or get all three for maximum transformation.",
+    startTransformation: "Start Transformation",
+    bundleOffer: "Want to master all three pillars? Get the complete bundle:",
+    getAllThree: "Get All Three Courses",
+    save: "Save",
+    dinar: "Dinars",
 
     // Elite Mentors
     mentorsTitle1: "Learn from",
@@ -204,7 +229,12 @@ export const translations: Record<string, Translation> = {
     allArticles: "All Articles",
     backToBlog: "Back to Blog",
     tags: "Tags:",
-    minRead: "min read"
+    minRead: "min read",
+
+    // Auth
+    login: "Login",
+    logout: "Logout",
+    welcome: "Welcome"
   },
   ar: {
     // Navigation
@@ -246,6 +276,16 @@ export const translations: Record<string, Translation> = {
     businessStrategies: "استراتيجيات الأعمال",
     investmentMastery: "إتقان الاستثمار",
     financialFreedom: "الحرية المالية",
+
+    // Pricing
+    pricingTitle1: "اختر مسار",
+    pricingTitle2: "التحول الخاص بك",
+    pricingSubtitle: "كل دورة مصممة لإتقان ركن واحد من أركان النجاح. اختر تركيزك أو احصل على الثلاثة جميعاً للحصول على أقصى تحول.",
+    startTransformation: "ابدأ التحول",
+    bundleOffer: "تريد إتقان الأركان الثلاثة جميعاً؟ احصل على الحزمة الكاملة:",
+    getAllThree: "احصل على الدورات الثلاث",
+    save: "وفر",
+    dinar: "دينار",
 
     // Elite Mentors
     mentorsTitle1: "تعلم من",
@@ -307,7 +347,12 @@ export const translations: Record<string, Translation> = {
     allArticles: "جميع المقالات",
     backToBlog: "العودة إلى المدونة",
     tags: "العلامات:",
-    minRead: "دقيقة قراءة"
+    minRead: "دقيقة قراءة",
+
+    // Auth
+    login: "تسجيل الدخول",
+    logout: "تسجيل الخروج",
+    welcome: "مرحباً"
   },
   fr: {
     // Navigation
@@ -349,6 +394,16 @@ export const translations: Record<string, Translation> = {
     businessStrategies: "Stratégies d'affaires",
     investmentMastery: "Maîtrise de l'investissement",
     financialFreedom: "Liberté financière",
+
+    // Pricing
+    pricingTitle1: "Choisissez Votre",
+    pricingTitle2: "Chemin de Transformation",
+    pricingSubtitle: "Chaque cours est conçu pour maîtriser un pilier du succès. Choisissez votre focus ou obtenez les trois pour une transformation maximale.",
+    startTransformation: "Commencer la Transformation",
+    bundleOffer: "Vous voulez maîtriser les trois piliers ? Obtenez le bundle complet :",
+    getAllThree: "Obtenez les Trois Cours",
+    save: "Économisez",
+    dinar: "Dinars",
 
     // Elite Mentors
     mentorsTitle1: "Apprenez des",
@@ -410,6 +465,11 @@ export const translations: Record<string, Translation> = {
     allArticles: "Tous les Articles",
     backToBlog: "Retour au Blog",
     tags: "Tags :",
-    minRead: "min de lecture"
+    minRead: "min de lecture",
+
+    // Auth
+    login: "Connexion",
+    logout: "Déconnexion",
+    welcome: "Bienvenue"
   }
 };
